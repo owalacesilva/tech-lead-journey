@@ -1,0 +1,22 @@
+{
+  "name": "tech-lead-journey",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.ts",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/owalacesilva/tech-lead-journey.git"
+  },
+  "keywords": [
+    "tech-lead"
+  ],
+  "author": "wsilva.emp@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/owalacesilva/tech-lead-journey/issues"
+  },
+  "homepage": "https://github.com/owalacesilva/tech-lead-journey#readme"
+}
