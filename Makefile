@@ -1,2 +1,2 @@
-start:
-	docker compose --env-file .env up --detach
+up:
+	docker compose --env-file .env up

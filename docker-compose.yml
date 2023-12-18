@@ -1,0 +1,64 @@
+version: '3.7'
+
+name: 'tech-lead-project'
+
+services:
+  postgres:
+    container_name: tech-lead-project_postgres
+    image: postgres:13
+    volumes:
+      - ./.docker/db-init.sql:/docker-entrypoint-initdb.d/dev-init.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    networks:
+      - local_network
+
+  mailhog:
+    container_name: tech-lead-project_mailhog
+    image: mailhog/mailhog
+    restart: unless-stopped
+    logging:
+      driver: 'none'
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+      - local_network
+
+  rabbitmq:
+    container_name: tech-lead-project_rabbitmq
+    image: rabbitmq:3.12-management
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - 15672:15672
+      - 5672:5672
+    networks:
+      - local_network
+
+  user:
+    container_name: tech-lead-project_user_service
+    restart: always
+    build:
+      context: ./services/user
+      target: dependencies
+    ports:
+      - 3000:3000
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - ./services/user:/workspace
+    tty: true
+    networks:
+      - local_network
+
+networks:
+  local_network:
+    name: local_network
+    driver: bridge
