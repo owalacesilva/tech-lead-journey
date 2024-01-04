@@ -58,6 +58,23 @@ services:
     networks:
       - local_network
 
+  offer:
+    container_name: tech-lead-project_offer_service
+    restart: always
+    build:
+      context: ./services/offer
+      target: dependencies
+    ports:
+      - 4000:4000
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - ./services/offer:/workspace
+    tty: true
+    networks:
+      - local_network
+
 networks:
   local_network:
     name: local_network
