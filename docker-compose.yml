@@ -75,6 +75,23 @@ services:
     networks:
       - local_network
 
+  product:
+    container_name: tech-lead-project_product_service
+    restart: always
+    build:
+      context: ./services/product
+      target: dependencies
+    ports:
+      - 5000:5000
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - ./services/product:/workspace
+    tty: true
+    networks:
+      - local_network
+
 networks:
   local_network:
     name: local_network

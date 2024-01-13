@@ -3,41 +3,48 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["public"]
 }
 
-model Users {
+model User {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  firstName String
-  lastName  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  firstName String   @map("first_name")
+  lastName  String   @map("last_name")
   email     String
-  authId    String
+  authId    String   @map("auth_id")
 
-  @schema("public")
+  @@map("users")
+  @@schema("public")
 }
 
-model Products {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Product {
+  id        Int            @id @default(autoincrement())
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
   title     String
-  weight    Int
+  weight    Float
+  images    ProductImage[]
 
-  @schema("public")
+  @@map("products")
+  @@schema("public")
 }
 
-model ProductImages {
+model ProductImage {
   id         Int      @id @default(autoincrement())
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  productId  Int
-  storageUrl String
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  productId  Int      @map("product_id")
+  product    Product  @relation(fields: [productId], references: [id])
+  storageUrl String   @map("storage_url")
 
-  @schema("public")
+  @@map("product_images")
+  @@schema("public")
 }
