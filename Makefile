@@ -1,18 +1,18 @@
 docker-up:
-	sudo docker compose --env-file .env up
+	sudo docker compose --env-file .environment up
 
 docker-down:
-	docker compose --env-file .env down
+	docker compose --env-file .environment down
 
 docker-build:
-	docker compose --env-file .env build
+	docker compose --env-file .environment build
 
 docker-restart:
-	docker compose --env-file .env down
-	docker compose --env-file .env up
+	docker compose --env-file .environment down
+	docker compose --env-file .environment up
 
 docker-logs:
-	docker compose --env-file .env logs -f
+	docker compose --env-file .environment logs -f
 
 docker-user-bash:
 	docker compose exec user bash
