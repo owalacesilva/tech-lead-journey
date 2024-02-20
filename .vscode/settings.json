@@ -1,0 +1,47 @@
+{
+  "editor.tabSize": 2,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.quoteStyle": "single",
+  "editor.fontSize": 14,
+  "workbench.tree.indent": 10,
+  "workbench.tree.renderIndentGuides": "always",
+  "workbench.colorCustomizations": {
+    "tree.indentGuidesStroke": "#05ef3c",
+  },
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.profiles.linux": {
+    "bash": {
+      "path": "bash",
+      "args": [
+        "-l"
+      ]
+    }
+  },
+  "[typescript]": {
+    "editor.formatOnSave": true,
+  },
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.format.enable": true,
+  "eslint.lintTask.enable": true,
+  "eslint.run": "onType",
+  "eslint.workingDirectories": [
+    "./src/**"
+  ],
+  "jest.autoRun": {
+    "watch": false,
+    "onSave": "test-file",
+    "onStartup": [
+      "all-tests"
+    ]
+  }
+}
