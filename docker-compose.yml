@@ -50,30 +50,18 @@ services:
     ports:
       - 3000:3000
     environment:
-      DATABASE_URL: ${DATABASE_URL}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    env_file:
+      - ./services/user/.env
     volumes:
       - ./services/user:/workspace
     tty: true
+    command: npm run up
     networks:
       - local_network
-
-  offer:
-    container_name: tech-lead-project_offer_service
-    restart: always
-    build:
-      context: ./services/offer
-      target: dependencies
-    ports:
-      - 4000:4000
-    environment:
-      DATABASE_URL: ${DATABASE_URL}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
-    volumes:
-      - ./services/offer:/workspace
-    tty: true
-    networks:
-      - local_network
+    depends_on:
+      - postgres
+      - rabbitmq
 
   product:
     container_name: tech-lead-project_product_service
@@ -82,17 +70,157 @@ services:
       context: ./services/product
       target: dependencies
     ports:
-      - 5000:5000
+      - 3001:3001
     environment:
-      DATABASE_URL: ${DATABASE_URL}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    env_file:
+      - ./services/product/.env
     volumes:
       - ./services/product:/workspace
     tty: true
+    command: npm run up
     networks:
       - local_network
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  auction:
+    container_name: tech-lead-project_auction_service
+    restart: always
+    build:
+      context: ./services/auction
+      target: dependencies
+    volumes:
+      - ./services/auction:/workspace
+    environment:
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    env_file:
+      - ./services/auction/.env
+    tty: true
+    command: npm run up
+    ports:
+      - 3002:3002
+    networks:
+      - local_network
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  bid:
+    container_name: tech-lead-project_bid_service
+    restart: always
+    build:
+      context: ./services/bid
+      target: dependencies
+    ports:
+      - 3003:3003
+    environment:
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    env_file:
+      - ./services/bid/.env
+    volumes:
+      - ./services/bid:/workspace
+    tty: true
+    command: npm run up
+    networks:
+      - local_network
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  mail:
+    container_name: tech-lead-project_mail_service
+    restart: always
+    build:
+      context: ./services/mail
+      target: dependencies
+    ports:
+      - 3004:3004
+    environment:
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    env_file:
+      - ./services/mail/.env
+    volumes:
+      - mail_dependencies:/workspace/node_modules
+      - ./services/mail:/workspace
+    tty: true
+    command: npm run up
+    networks:
+      - local_network
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  auction_create_user:
+    container_name: tech-lead-project_auction_create_user_consumer
+    restart: always
+    build:
+      context: ./consumers/auction_create_user_consumer
+      target: dependencies
+    ports:
+      - 3005:3005
+    environment:
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - ./consumers/auction_create_user_consumer:/workspace
+    tty: true
+    command: npm run up
+    networks:
+      - local_network
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  product_create_user:
+    container_name: tech-lead-project_product_create_user_consumer
+    restart: always
+    build:
+      context: ./consumers/product_create_user_consumer
+      target: dependencies
+    ports:
+      - 3006:3006
+    environment:
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - ./consumers/product_create_user_consumer:/workspace
+    tty: true
+    command: npm run up
+    networks:
+      - local_network
+    depends_on:
+      - postgres
+      - rabbitmq
+
+  auction_create_product:
+    container_name: tech-lead-project_auction_create_product_consumer
+    restart: always
+    build:
+      context: ./consumers/auction_create_product_consumer
+      target: dependencies
+    ports:
+      - 3007:3007
+    environment:
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - ./consumers/auction_create_product_consumer:/workspace
+    tty: true
+    command: npm run up
+    networks:
+      - local_network
+    depends_on:
+      - postgres
+      - rabbitmq
 
 networks:
   local_network:
-    name: local_network
+    name: tech-lead-project_network
     driver: bridge
+
+volumes:
+  mail_dependencies:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./services/mail/node_modules
