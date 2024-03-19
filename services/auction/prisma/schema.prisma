@@ -30,6 +30,7 @@ model Product {
   id        Int            @id @default(autoincrement())
   createdAt DateTime       @default(now()) @map("created_at")
   updatedAt DateTime       @updatedAt @map("updated_at")
+  guid      String
   title     String
   weight    Float
   images    ProductImage[]
@@ -42,10 +43,36 @@ model ProductImage {
   id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
+  guid       String
   productId  Int      @map("product_id")
   product    Product  @relation(fields: [productId], references: [id])
   storageUrl String   @map("storage_url")
 
   @@map("product_images")
+  @@schema("public")
+}
+
+model Auction {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  guid      String
+  interval  Int
+  optOut    DateTime
+
+  @@map("auctions")
+  @@schema("public")
+}
+
+model AuctionProduct {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  guid      String
+  auctionId Int      @map("auction_id")
+  productId Int      @map("product_id")
+
+  @@unique([auctionId, productId])
+  @@map("auction_products")
   @@schema("public")
 }

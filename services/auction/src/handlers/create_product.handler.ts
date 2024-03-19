@@ -1,17 +1,16 @@
-import { CommandHandler, EventBus, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { Product } from '../domain/product';
 import { CreateProductCommand } from '../commands/create_product.command';
 import { IProductRepository } from '../repositories/repository.interfaces';
 import { Inject } from '@nestjs/common';
-import { ProductCreatedEvent } from 'src/events/product_created.event';
+import { PRODUCT_REPOSITORY } from 'src/domain/constants';
 
 @CommandHandler(CreateProductCommand)
 export class CreateProductHandler
   implements ICommandHandler<CreateProductCommand>
 {
   constructor(
-    private readonly eventBus: EventBus,
-    @Inject('domain/PRODUCT_REPOSITORY')
+    @Inject(PRODUCT_REPOSITORY)
     private readonly repository: IProductRepository,
   ) {}
 
@@ -19,11 +18,6 @@ export class CreateProductHandler
     const { title, weight } = command;
     const product = Product.create({ title, weight });
 
-    try {
-      // validar id do oferta
-      const persistedProduct = await this.repository.save(product);
-    } catch() {}
-
-    this.eventBus.publish(new ProductCreatedEvent(persistedProduct));
+    return await this.repository.save(product);
   }
 }
